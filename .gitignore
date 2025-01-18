@@ -1,0 +1,79 @@
+# .NET generated files
+bin/
+obj/
+out/
+*.dll
+*.pdb
+*.exe
+*.app
+*.so
+*.dylib
+*.log
+*.user
+*.lock.json
+*.suo
+*.cache
+*.csproj.user
+*.env
+
+# Rider files
+.idea/
+*.sln.iml
+
+# VS Code files
+.vscode/
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+*.coverlet/
+
+# NuGet Packages
+*.nupkg
+packages/
+.nuget/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Resharper files
+_ReSharper*/
+*.DotSettings.user
+
+# Backup & Report Files
+_backup*/
+**/Reports/
+*.report.xml
+
+# SQL Server files
+*.mdf
+*.ldf
+
+# Docker files
+**/[dD]ockerfile*
+**/[dD]ocker-compose*
+.dockerignore
+
+# Temporary files
+*.tmp
+*.bak
+*.old
+*.swp
+*~
+
+# macOS files
+.DS_Store
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+.env.*
+
+# Python files
+__pycache__/
+*.py[cod]
+*$py.class
