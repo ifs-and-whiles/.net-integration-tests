@@ -20,7 +20,7 @@ public class ExpensesRepository(AppSettings appSettings)
     public async Task<ExpenseEntity?> GetExpenseById(Guid id)
     {
         using var connection = new Npgsql.NpgsqlConnection(_connectionString);
-        var query = "SELECT id, name, amount, user_id FROM expenses WHERE id = @Id;";
+        var query = "SELECT id, name, amount, user_id as UserId FROM expenses WHERE id = @Id;";
         return await connection.QuerySingleOrDefaultAsync<ExpenseEntity>(query, new { Id = id });
     }
 

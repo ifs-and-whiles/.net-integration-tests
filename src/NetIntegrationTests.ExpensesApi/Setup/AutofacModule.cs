@@ -12,7 +12,5 @@ public class AutofacModule : Module
     {
         builder.RegisterType<ExpensesRepository>().AsSelf();
         builder.RegisterType<UsersService>().AsSelf();
-        builder.RegisterType<ExpenseCreatedConsumer>()
-            .As<IConsumer<ExpenseCreatedEvent>>();
     }
 }

@@ -6,6 +6,16 @@ public static class Contracts
     {
         public static class V1
         {
+            public static class Events
+            {
+                public class ExpenseCreatedEvent
+                {
+                    public static string ExchangeName { get; } = "NetIntegrationTests.Expenses:Contracts-Expenses-V1-Events-ExpenseCreatedEvent";
+                    public Guid Id { get; set; }
+                    public Guid UserId { get; set; }
+                }
+
+            }
             public static class Get
             {
                 public class Request
@@ -18,6 +28,7 @@ public static class Contracts
                     public Guid Id { get; set; }
                     public string Name { get; set; }
                     public decimal Amount { get; set; }
+                    public Guid UserId { get; set; }
                 }
             }
 

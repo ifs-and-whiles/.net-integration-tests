@@ -1,6 +1,7 @@
 using MassTransit;
 using NetIntegrationTests.Expenses;
 using NetIntegrationTests.Setup;
+using RabbitMQ.Client;
 
 namespace NetIntegrationTests;
 
@@ -16,21 +17,18 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 
-public class Startup
+public class Startup(AppSettings appSettings)
 {
-    public IConfiguration Configuration { get; }
-
-    public Startup(IConfiguration configuration)
-    {
-        Configuration = configuration;
-    }
+    private readonly AppSettings _appSettings = appSettings;
 
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddAuthentication("BasicAuthentication")
             .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
-        services.AddControllers()
+        services
+            .AddControllers()
+            .AddApplicationPart(typeof(ExpensesController).Assembly)
             .AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -39,31 +37,53 @@ public class Startup
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Integration Tests API", Version = "v1" });
+            
+            c.AddSecurityDefinition("basic", new OpenApiSecurityScheme
+            {
+                Type = SecuritySchemeType.Http,
+                Scheme = "basic",
+                Description = "Input your username and password to access this API"
+            });
+
+            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "basic"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+            
             c.CustomSchemaIds(type => type.FullName.Replace("+", "."));
         });
         
-        var settings = Configuration.GetSection("Settings").Get<AppSettings>();
         services.AddMassTransit(x =>
         {
-            x.AddConsumer<ExpenseCreatedConsumer>();
-            
             x.UsingRabbitMq((context, cfg) =>
             {
-                cfg.Host(new Uri(settings.RabbitMqHost), h =>
+                cfg.Host(new Uri(_appSettings.RabbitMqHost), h =>
                 {
-                    h.Username(settings.RabbitMqUsername);
-                    h.Password(settings.RabbitMqPassword);
+                    h.Username(_appSettings.RabbitMqUsername);
+                    h.Password(_appSettings.RabbitMqPassword);
                 });
 
-                cfg.ConfigureEndpoints(context);
+                cfg.ReceiveEndpoint(_appSettings.ServiceQueueName, e =>
+                {
+                    
+                });
             });
         });
     }
 
     public void ConfigureContainer(ContainerBuilder builder)
     {
-        var mySettings = Configuration.GetSection("Settings").Get<AppSettings>();
-        builder.RegisterInstance(mySettings);
+        builder.RegisterInstance(_appSettings);
 
         builder.RegisterModule(new AutofacModule());
     }
@@ -101,5 +121,7 @@ public class AppSettings
     public string RabbitMqPassword { get; set; }
     public string UsersServicePath { get; set; }
     public string BasicApiUser { get; set; }
-    public string BasicApiPassword { get; set; }
+    public string BasicApiUserPassword { get; set; }
+    public string WebEndpoint { get; set; }
+    public string ServiceQueueName { get; set; }
 }

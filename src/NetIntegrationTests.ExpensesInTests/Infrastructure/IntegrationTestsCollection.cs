@@ -1,6 +1,11 @@
+using NetIntegrationTests.ExpensesInTests.Infrastructure.CoreFixtures;
+
 namespace NetIntegrationTests.ExpensesInTests.Infrastructure;
 
-public class IntegrationTestsCollection
+[CollectionDefinition(Name)]
+public class IntegrationTestsCollection : ICollectionFixture<HostFixture>
 {
+    public const string Name = "IntegrationTests";
+
     
 }

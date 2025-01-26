@@ -36,7 +36,7 @@ public class BasicAuthenticationHandler(
             return Task.FromResult(AuthenticateResult.Fail("Invalid Authorization Header"));
         }
 
-        if (username != appSettings.BasicApiUser || password != appSettings.BasicApiPassword)
+        if (username != appSettings.BasicApiUser || password != appSettings.BasicApiUserPassword)
         {
             return Task.FromResult(AuthenticateResult.Fail("Invalid Username or Password"));
         }

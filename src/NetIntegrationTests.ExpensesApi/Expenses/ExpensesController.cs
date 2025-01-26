@@ -32,6 +32,7 @@ public class ExpensesController(
             Id = expense.Id,
             Name = expense.Name,
             Amount = expense.Amount,
+            UserId = expense.UserId
         });
     }
 
@@ -64,7 +65,7 @@ public class ExpensesController(
             request.Amount, 
             request.UserId);
         
-        await bus.Publish(new ExpenseCreatedEvent()
+        await bus.Publish(new Contracts.Expenses.V1.Events.ExpenseCreatedEvent()
         {
             Id = expenseId,
             UserId = request.UserId

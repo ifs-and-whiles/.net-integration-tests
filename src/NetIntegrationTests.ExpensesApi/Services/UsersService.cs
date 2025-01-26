@@ -13,6 +13,7 @@ public class UsersService(AppSettings appSettings)
     {
         var response = await _usersServicePath
             .AppendPathSegment("users/get-user")
+            .AllowAnyHttpStatus()
             .PostJsonAsync(new Contracts.Users.V1.Get.Request() { Id = userId });
 
         if (response.ResponseMessage.StatusCode == HttpStatusCode.NotFound)
