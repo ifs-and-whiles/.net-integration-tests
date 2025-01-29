@@ -52,23 +52,23 @@ public async Task should_create_expense_and_emit_event()
 [Fact]
 public async Task should_return_400_when_user_does_not_exist()
 {
-	var user = new UserBuilder(this);
+    var user = new UserBuilder(this);
 
     //Start http users service and return 404 code for method: get-user
 	UsersService
-		.with_user_not_found(user.ToGetUserResponse())
-		.start();
+	.with_user_not_found(user.ToGetUserResponse())
+	.start();
 	
-	var expense = new ExpenseBuilder(this)
+    var expense = new ExpenseBuilder(this)
 		.WithUserId(user.Id);
 
     //HTTP call to main API application to save expense
-	var response = async ()=>   await Api.save_expense(expense.ToCreateExpense(), DefaultBasicAuthApiUser);
+    var response = async ()=>   await Api.save_expense(expense.ToCreateExpense(), DefaultBasicAuthApiUser);
 
     //Validate result
-	var exception = await response.Should().ThrowAsync<TestApiCallErrorException>();
-	exception.And.HttpStatusCode.Should().Be(HttpStatusCode.BadRequest);
-	exception.And.Error.Should().Be("User does not exist");
+    var exception = await response.Should().ThrowAsync<TestApiCallErrorException>();
+    exception.And.HttpStatusCode.Should().Be(HttpStatusCode.BadRequest);
+    exception.And.Error.Should().Be("User does not exist");
 }
 
 
