@@ -1,7 +1,7 @@
 # .NET Integration Tests
 
 ## 📌 Project Overview
-This repository demonstrates how to write comprehensive integration tests in C# for a .NET application. The tests are designed to validate the entire solution by:
+This repository demonstrates how to write comprehensive integration tests in C# for a .AspNet Core application. The tests are designed to validate the entire solution by:
 
 - **Utilizing a database**: Ensuring data persistence and retrieval operations function correctly.
 - **Starting the service API**: Allowing all requests to interact with the running application without any mocks.
