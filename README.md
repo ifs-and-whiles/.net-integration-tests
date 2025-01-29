@@ -197,33 +197,33 @@ public async Task  wait_for_message_in_queue<TMessage>(
 	try
 	{
 		await wait_for_passed_condition_or_throw_after_timeout(async () =>
+		{
+			var rawMessage = await QueueEngine.ReadRawMessageFromQueue(
+				queueName);
+	
+			if (string.IsNullOrEmpty(rawMessage))
+				throw new IntegrationTestException(" The queue does not contain expected messages");
+			
+			var expectedMessage = JsonConvert.DeserializeObject<TMessage>(rawMessage);
+	
+			if (expectedMessage == null)
 			{
-				var rawMessage = await QueueEngine.ReadRawMessageFromQueue(
-					queueName);
-
-				if (string.IsNullOrEmpty(rawMessage))
-					throw new IntegrationTestException(" The queue does not contain expected messages");
-				
-				var expectedMessage = JsonConvert.DeserializeObject<TMessage>(rawMessage);
-
-				if (expectedMessage == null)
-				{
-					throw new IntegrationTestException("Message was null");
-				}
-
-				try
-				{
-					condition(expectedMessage);
-				}
-				catch (Exception e)
-				{
-					relevantError = e;
-					throw;
-				}
-
-			},
-			checkingIntervalInMilliseconds: 100,
-			retryCount: 100);
+				throw new IntegrationTestException("Message was null");
+			}
+	
+			try
+			{
+				condition(expectedMessage);
+			}
+			catch (Exception e)
+			{
+				relevantError = e;
+				throw;
+			}
+	
+		},
+		checkingIntervalInMilliseconds: 100,
+		retryCount: 100);
 	}
 	catch (Exception)
 	{
