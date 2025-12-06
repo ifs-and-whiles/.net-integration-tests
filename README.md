@@ -53,6 +53,8 @@ These tests are efficient, as the API application is initialized only once, and 
 
 ## 🚀 Example of the tests
 
+<img width="1182" height="483" alt="image" src="https://github.com/user-attachments/assets/4bd52154-1290-4c9d-b2ea-952342296aa5" />
+
 ```csharp
 [Fact]
 public async Task should_create_expense_and_emit_event()
