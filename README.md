@@ -8,6 +8,48 @@ This repository demonstrates how to write comprehensive integration tests in C# 
 
 These tests are efficient, as the API application is initialized only once, and they provide reliable results by verifying the application's behavior along with all its dependencies. They are also **fast**, as they do not require re-initializing the database, API, or other components for each test, which is a key advantage. Additionally, they do not use **any mocks** in the code, making maintenance easy—there is no need to adjust the tests with every code change, only when the application's external contract changes.
 
+              ┌────────────────────┐
+              │   Test Runner      │
+              │   (xUnit / NUnit)  │
+              └─────────┬──────────┘
+                        │ starts
+                        ▼
+        ┌──────────────────────────────────┐
+        │   Running .NET API (Test Env)   │
+        │   • real DI container            │
+        │   • real config (test version)   │
+        └─────────┬──────────┬────────────┘
+                  │          │
+                  │          │ calls
+                  │          ▼
+                  │    ┌───────────────┐
+                  │    │ Fake HTTP     │
+                  │    │ Services      │
+                  │    └───────────────┘
+                  │
+          writes  │
+                  ▼
+        ┌───────────────────┐
+        │  PostgreSQL DB    │
+        │ (Docker Compose)  │
+        └───────────────────┘
+                  ▲
+                  │ waits for data
+                  │
+        ┌───────────────────┐
+        │    RabbitMQ       │
+        │ (real queue)      │
+        └───────────────────┘
+                  ▲
+                  │ waits for
+                  │   messages
+                  ▼
+        ┌───────────────────┐
+        │  Test Assertions   │
+        │ • database checks  │
+        │ • queue messages   │
+        │ • API responses    │
+        └───────────────────┘
 
 ## 🚀 Example of the tests
 
